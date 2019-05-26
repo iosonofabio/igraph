@@ -7,15 +7,14 @@
 int main() {
   igraph_attribute_table_t* oldHandler = igraph_i_set_attribute_table(&igraph_cattribute_table);
 
-  FILE* graphFile = fopen("cattr_bool_bug2.graphml", "r");
-
+  FILE* ifile = fopen("cattr_bool_bug2.graphml", "r");
 
   if (!ifile) {
     printf("Cannot open input file");
     return 1;
   }
 
-  igraph_read_graph_graphml(&graph, graphFile, 0);
+  igraph_read_graph_graphml(&graph, iFile, 0);
 
   fclose(graphFile);
 
