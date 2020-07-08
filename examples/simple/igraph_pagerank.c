@@ -262,6 +262,38 @@ int main() {
     igraph_vector_destroy(&weights);
     igraph_destroy(&g);
 
+    /* Test case for directed multigraphs with weights, as of issue #972 */
+    igraph_small(&g, 3, IGRAPH_DIRECTED, 0,1, 0,2, 1,0, 2,0, -1);
+    igraph_vector_init(&weights, 4);
+    VECTOR(weights)[0] = 0.3;
+    VECTOR(weights)[1] = 0.4;
+    VECTOR(weights)[2] = 0.6;
+    VECTOR(weights)[3] = 0.9;
+    igraph_pagerank(&g, IGRAPH_PAGERANK_ALGO_ARPACK, &res, 0,
+                    igraph_vss_all(), 1, 0.85, &weights, &arpack_options);
+    print_vector(&res, stdout);
+    igraph_pagerank(&g, IGRAPH_PAGERANK_ALGO_PRPACK, &res, 0,
+                    igraph_vss_all(), 1, 0.85, &weights, 0);
+    print_vector(&res, stdout);
+    igraph_vector_destroy(&weights);
+    igraph_destroy(&g);
+
+    /* same but undirected - this one was inconsistent in the issue */
+    igraph_small(&g, 3, IGRAPH_UNDIRECTED, 0,1, 0,2, 1,0, 2,0, -1);
+    igraph_vector_init(&weights, 4);
+    VECTOR(weights)[0] = 0.3;
+    VECTOR(weights)[1] = 0.4;
+    VECTOR(weights)[2] = 0.6;
+    VECTOR(weights)[3] = 0.9;
+    igraph_pagerank(&g, IGRAPH_PAGERANK_ALGO_ARPACK, &res, 0,
+                    igraph_vss_all(), 0, 0.85, &weights, &arpack_options);
+    print_vector(&res, stdout);
+    igraph_pagerank(&g, IGRAPH_PAGERANK_ALGO_PRPACK, &res, 0,
+                    igraph_vss_all(), 0, 0.85, &weights, 0);
+    print_vector(&res, stdout);
+    igraph_vector_destroy(&weights);
+    igraph_destroy(&g);
+
     igraph_vector_destroy(&res);
     return 0;
 }
